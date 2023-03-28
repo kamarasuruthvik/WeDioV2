@@ -1,0 +1,12 @@
+#Ignore node modules
+*/node_modules
+
+#Ignore node modules in backend
+./backend/node_modules
+
+
+#Ignore package json
+*/package.lock.json
+
+#Ignore .env files
+*/.env

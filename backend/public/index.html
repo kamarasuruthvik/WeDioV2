@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <link rel="stylesheet" href="style.css">
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Video App</title>
+    </head>
+    <body>
+
+        <div>
+            <h3>Your Id: <span id="myId"></span></h3>
+            <h3>Online Users (click to connect)</h3>
+            <div id="users">
+
+            </div>
+            <video id="local-video"></video>
+            <video id="remote-video"></video>
+        </div>
+        <div>
+            <p id="status"></p>
+        </div>
+
+        <!-- Import socket.io script -->
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+            const getAndUpdateUsers = async ()=>{
+                const usersDiv= document.getElementById('users');
+                const response = await fetch('/users', { method : 'GET'});
+                const jsonResponse = await response.json();
+                console.log(jsonResponse);
+
+
+                jsonResponse.forEach(user => {
+                    const btn = document.createElement('button');
+                    const textNode = document.createTextNode(user[0]);
+                    btn.setAttribute('onclick', `createCall('${user[0]}')`);
+                    btn.appendChild(textNode);
+                    usersDiv.appendChild(btn);
+                });
+            }
+            socket.on('user:joined', (id)=>{
+
+                console.log('user joined id: ', id);
+                const usersDiv = document.getElementById('users');
+                const btn = document.createElement('button');
+                const textNode = document.createTextNode(id);
+
+                btn.appendChild(textNode);
+                btn.setAttribute('onclick', `createCall('${id}')`);
+                usersDiv.appendChild(btn);
+            });
+
+
+            window.addEventListener('load', getAndUpdateUsers);
+        </script>
+    </body>
+</html>
